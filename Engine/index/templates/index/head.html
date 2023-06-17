@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html class="night">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+            {% if title -%}
+                {% block title %}{% endblock %} 
+            {% else %}
+                PenSpark
+            {% endif %}
+    </title>
+    
+    <meta name="description" content="PenSpark - A community-driven platform for sharing and discussing ideas.">
+    <meta name="keywords" content="PenSpark, community, sharing, discussion">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <!-- <link rel="canonical" href="https://www.penspark.com"> -->
+
+    <!-- Open Graph meta tags -->
+    <meta property="og:title" content="PenSpark">
+    <meta property="og:description" content="A community-driven platform for sharing and discussing ideas.">
+    <!-- <meta property="og:image" content="https://www.penspark.com/images/og-image.jpg"> -->
+    <!-- <meta property="og:url" content="https://www.penspark.com"> -->
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PenSpark">
+    <meta name="twitter:description" content="A community-driven platform for sharing and discussing ideas.">
+    <!-- <meta name="twitter:image" content="https://www.penspark.com/images/twitter-card-image.jpg"> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ url_for('index.static', filename='head.js') }}" type="module"></script>
+
+    {% block script -%}{%- endblock script %}
+    {% block component_script -%}{%- endblock component_script %}
+
+    <link rel="stylesheet" href="{{ url_for('index.static', filename='head.css') }}">
+
+    {% block style -%}{%- endblock style %}
+    {% block component_style -%}{% endblock component_style %}
+
+    {% with messages=get_flashed_messages() -%}
+    <ul class="flashes">
+        {% if messages -%} {% for message in messages -%}
+        <li class="message">{{ message }}</li>
+        {%- endfor %} {%- else -%}
+        <li class="message">{{ message }}</li>
+        {%- endif %}
+    </ul>
+    {%- endwith %}
+
+</head>
+
+<body>
+    <script>0</script>
+    <div id="form-background"></div>
+
+    {% block login -%}{%- endblock login %}
+    {% block register -%}{%- endblock register %}
+    {% block main -%}{%- endblock %}
+    {% block profile -%}{%- endblock profile %}
+    {% block new_project -%}{%- endblock new_project %}
+</body>

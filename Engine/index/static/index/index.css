@@ -1,0 +1,338 @@
+@import "/static/root.css";
+
+#grid-container {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    width: 75%;
+    margin: 0 auto;
+}
+
+/*----------------+ 
+|   Top Content   |
++-----------------*/
+
+/*---------------+--------------+ 
+| |_____________________|       |
+|                               |
+|                               |
+|                               |
+|                               |
+|                               |
++----------------+--------------*/
+
+#top-bar {
+    grid-area: top-bar;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    border-bottom: 1px solid var(--accent);
+}
+
+#top-bar > div {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 2rem;
+}
+
+#top-bar > div > * {
+    cursor: pointer;
+    transition: 200ms ease;
+}
+
+.icon {
+    width: 1rem;
+    display: none;
+}
+
+#sun-off {
+    fill: var(--text);
+}
+
+#night-toggle:hover, #logout:hover {
+    color: var(--accent);
+}
+
+#notification-icon {
+    margin-left: 2em;
+    width: 1.5rem;
+    background-color: inherit;
+}
+
+.dashboard-profile-picture {
+    height: 3rem;
+    width: 3rem;
+    cursor: pointer;
+    clip-path: circle();
+    object-fit: cover;
+}
+
+/*-----------------+ 
+|   Main Content   |
++------------------*/
+
+/*---------------+---------------+ 
+|________________________________|
+|                                |
+|                                |
+|              here              |
+|                                |
+|                                |
++---------------+----------------*/
+
+#main-content {
+    position: relative;
+    align-items: flex-start;
+}
+
+.blog-buttons__button {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    margin: 1rem;
+}
+
+.blog-buttons__button > p {
+    color: inherit;
+}
+
+#blog-posts {
+    width: 100%;
+    height: 1rem;
+    /* padding: calc(0.5rem + 0.5vw) 0; */
+}
+
+#blog-posts > h1 {
+    font-size: 2rem;
+    margin: 2rem;
+}
+
+#blog-posts > p {
+    margin: 1rem;
+}
+
+#create-blog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 150%);
+    border: 1px solid var(--accent);
+    background-color: var(--background);
+    width: 550px;
+    max-width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1rem;
+    padding: calc(.5rem + .5vw);
+    z-index: 3;
+    opacity: 1;
+
+    transition: 150ms;
+}
+
+#create-blog.active {
+    transform: translate(-50%, -50%);
+    opacity: 1;    
+}
+
+#create-blog > * {
+    width: 100%;
+}
+
+#create-blog__options {
+    display: flex;
+    justify-content: space-between;
+}
+
+#create-blog__form-name {
+    cursor: default;
+}
+
+#create-blog__close-box {
+    width: fit-content;
+    height: fit-content;
+}
+
+#create-blog-close {
+    cursor: pointer;
+}
+
+.create-blog__input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#create-blog__title {
+    padding: calc(.5rem + .3vw);
+    background-color: var(--input-background);
+    color: inherit;
+    border: none;
+}
+
+#create-blog__body {
+    resize: none;
+    padding: calc(.5rem + .3vw);
+    background-color: var(--input-background);
+    color: inherit;
+    border: none;
+}
+
+#create-blog__submit > p{
+    color: inherit;
+}
+
+#create-blog__bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+input[type=file] {
+    width: 80%;
+    color: black;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: var(--primary);
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+}
+
+#create-blog__bottom-image {
+    background: var(--primary);
+    border-radius: 10px;
+    margin-top: 0.5rem;
+}
+
+/* blog posts */
+.blog-post {
+    background-color: var(--input-background);
+    padding: calc(.5vw + .5rem);
+    width: 95%;
+    margin: 0 auto;
+    margin-bottom: calc(.5rem + .5vh);
+}
+
+.blog-post > * {
+    background-color: inherit;
+}
+
+.blog-post, .blog-post__data {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.blog-post__data {
+    cursor: pointer;
+}
+
+.blog-post__data:hover > .blog-post__title {
+    color: var(--accent);
+}
+
+.blog-details {
+    font-size: 0.8rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.blog-post__title {
+    font-size: 1.3rem;
+    transition: 250ms;
+    background-color: inherit;
+}
+
+.blog-content {
+    pointer-events: none;
+    cursor: default;
+}
+
+.blog-post__buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.blog-post__buttons-like {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+}
+
+#thumbs-up-filled,
+#thumbs-up-unfilled {
+    width: 2.5rem;
+    height: fit-content;
+    background-color: white;
+    border-radius: 50%;
+    padding: 0.5rem;
+}
+
+.likes {
+    margin-right: 0.5rem;
+}
+
+.blog-post__button {
+    border: none;
+    cursor: pointer;
+    transition: 250ms;
+    background-color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.blog-post__button:hover {
+    color: var(--accent)
+}
+
+@media screen and (orientation: portrait) {
+    #grid-container {
+        width: 100%;
+    }
+    #top-bar {
+        gap: 0.5rem;
+        padding: 0.5rem;
+    } 
+    #night-toggle {
+        display: none;
+    }
+    #sun {
+        display: block;
+    }
+    #logout > p,
+    #blog-buttons__create-button > p,
+    #create-blog-close,
+    #create-blog__submit > p {
+        display: none;
+    }
+    #logout-icon,
+    #pencil-icon,
+    #create-blog-close-icon,
+    #plus-icon {
+        display: block;
+    }
+    #logout-icon,
+    #create-blog-close-icon {
+        fill: var(--iconFill);
+    }
+    #blog-posts > h1 {
+        font-size: 1.5rem;
+        margin: 1rem;
+    }
+    #top-bar > div {
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+    .dashboard-profile-picture {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+}
