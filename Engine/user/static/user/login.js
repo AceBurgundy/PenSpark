@@ -8,6 +8,12 @@ eyeToggle(
     document.getElementById("log-eye-off")
 );
 
+const toRegister = document.querySelector("#to-register");
+
+toRegister.addEventListener("click", () => {
+    window.location = "/register"
+})
+
 $("#login-button").click(function (e) {
     e.preventDefault();
 
