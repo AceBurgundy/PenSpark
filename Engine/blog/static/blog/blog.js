@@ -181,6 +181,28 @@ $(document).ready(function () {
 
     });
 
+    // $("#delete-prompt__buttons__delete").click(function () {
+    //     const actionUrl = $("#delete-prompt [data-action]").data("action");
+
+    //     $.ajax({
+    //         url: actionUrl,
+    //         type: "POST",
+    //         success: function (response) {
+                
+    //             if (response.status === "error") {
+    //                 makeToastNotification("Cannot find blog");
+    //             } else {
+    //                 window.location.href = response.url
+    //             }
+
+    //         },
+    //         error: function (xhr, status, error) {
+    //             // Handle error response here
+    //             console.log("Error deleting blog:", error);
+    //         },
+    //     });
+    // });
+      
     loadComments();
 
 });

@@ -64,9 +64,9 @@ class Blog(db.Model):
             if os.path.exists(image_path):
                 os.remove(image_path)
 
-                # Delete the blog
-                db.session.delete(self)
-                db.session.commit()        
+        # Delete the blog
+        db.session.delete(self)
+        db.session.commit()   
 
     def __repr__(self):
         return f"Blog('{self.title}', '{self.date_posted}')"
