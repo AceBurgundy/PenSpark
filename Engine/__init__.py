@@ -14,6 +14,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    app.secret_key = Config.SECRET_KEY
     login_manager.init_app(app)
     db.init_app(app)
 
