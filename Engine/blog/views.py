@@ -43,7 +43,7 @@ def get_blog(blog_id):
     else:
         return render_template('404.html'), 404
 
-@blog.route('/blog/<int:blog_id>/delete', methods=['POST'])
+@blog.post('/blog/<int:blog_id>/delete')
 @login_required
 def delete_blog(blog_id):
     """
@@ -56,7 +56,6 @@ def delete_blog(blog_id):
         A redirection to the home page after deleting the blog post.
     """
     blog = Blog.query.get(blog_id)
-
     blog.delete()
     db.session.commit()
 
