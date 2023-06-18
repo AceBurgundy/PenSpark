@@ -1,18 +1,18 @@
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from Engine import blog
 from flask_login import LoginManager
-from Engine.config import Config
+from flask import Flask
 
 login_manager = LoginManager()
 login_manager.login_view = 'user.login'
 
 db = SQLAlchemy()
 
-def create_app(config_class=Config):
+def create_app():
 
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config['SECRET_KEY'] = "02acf27fea4d3asdasdfasfde325232345wetg4qbg43c002a063da2e71cf56e866be904fd5467670b99efa8a5d035a1"
+    app.config['SECRET_KEY'] = "filesystem"
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 
     login_manager.init_app(app)
     db.init_app(app)
