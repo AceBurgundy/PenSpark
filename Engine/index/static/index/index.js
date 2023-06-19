@@ -22,55 +22,50 @@ $(document).ready(function () {
     // add blog form submission
     form.on("submit", function (event) {
         event.preventDefault();
-
+    
         const titleInput = $("#create-blog__title");
         const bodyInput = $("#create-blog__body");
         const imageInput = $("#create-blog__bottom-image");
-
+    
         if (titleInput.val() === "" || bodyInput.val() === "") {
             makeToastNotification("Fields Cannot be empty");
             return;
         }
-
+    
         if (bodyInput.val().length > 750) {
             makeToastNotification("Content cannot be greater than 750");
             return;
         }
-
+    
         if (titleInput.val().length > 100) {
             makeToastNotification("Title cannot be greater than 100");
             return;
         }
-
+    
         // Check if the selected file is an image
         const file = imageInput[0].files[0];
         if (file && !file.type.startsWith("image/")) {
             makeToastNotification("Not an image");
             return;
         }
-
-        var formData = new FormData();
-        formData.append("title", titleInput.val());
-        formData.append("body", bodyInput.val());
-        formData.append("image", file);
-
+        
+        const formData = $("#create-blog").serialize();
+        
         titleInput.val("");
         bodyInput.val("");
         imageInput.val("");
-
+            
         $.ajax({
             url: "/blogs",
             type: "POST",
             data: formData,
-            cache: false,
-            processData: false,
-            contentType: false,
             success: function (response) {
                 if (response.status === "success") {
                     makeToastNotification(response.message);
                     fetchBlogPosts();
                 } else {
-                    makeToastNotification(response.message);
+                    console.log(response.message);
+                    response.message.forEach(message => makeToastNotification(message))
                 }
             },
             error: function (xhr, status, error) {
@@ -79,6 +74,7 @@ $(document).ready(function () {
             },
         });
     });
+    
 
     handleLikeButton();
 
@@ -156,6 +152,12 @@ $(document).ready(function () {
             },
         });
     }
+    
+    $("#create-blog__submit").on("click", function () {
+        makeToastNotification("Adding Blog")
+    });
 
     fetchBlogPosts();
+
+
 });
