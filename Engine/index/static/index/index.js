@@ -1,5 +1,4 @@
 import makeToastNotification, {
-    getCurrentOrientation,
     handleLikeButton,
 } from "../../../static/helper.js";
 
@@ -23,57 +22,67 @@ $(document).ready(function () {
     form.on("submit", function (event) {
         event.preventDefault();
     
-        const titleInput = $("#create-blog__title");
-        const bodyInput = $("#create-blog__body");
-        const imageInput = $("#create-blog__bottom-image");
+        const csrfInput = document.getElementById("csrf_token")
+        const titleInput = document.getElementById("create-blog__title");
+        const bodyInput = document.getElementById("create-blog__body");
+        const imageInput = document.getElementById("create-blog__bottom-image");
     
-        if (titleInput.val() === "" || bodyInput.val() === "") {
+        if (titleInput.value === "" || bodyInput.value === "") {
             makeToastNotification("Fields Cannot be empty");
             return;
         }
     
-        if (bodyInput.val().length > 750) {
+        if (bodyInput.value.length > 750) {
             makeToastNotification("Content cannot be greater than 750");
             return;
         }
     
-        if (titleInput.val().length > 100) {
+        if (titleInput.value.length > 100) {
             makeToastNotification("Title cannot be greater than 100");
             return;
         }
     
         // Check if the selected file is an image
-        const file = imageInput[0].files[0];
+        const file = imageInput.files[0];
         if (file && !file.type.startsWith("image/")) {
             makeToastNotification("Not an image");
             return;
         }
-        
-        const formData = $("#create-blog").serialize();
-        
-        titleInput.val("");
-        bodyInput.val("");
-        imageInput.val("");
-            
-        $.ajax({
-            url: "/blogs",
-            type: "POST",
-            data: formData,
-            success: function (response) {
+    
+
+        const formData = new FormData();
+        formData.append("csrf_token", csrfInput.value)
+        formData.append("title", titleInput.value);
+        formData.append("body", bodyInput.value);
+        formData.append("image", file);
+    
+        titleInput.value = "";
+        bodyInput.value = "";
+        imageInput.value = "";
+    
+        fetch("/blogs", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(response => {
                 if (response.status === "success") {
                     makeToastNotification(response.message);
                     fetchBlogPosts();
                 } else {
-                    console.log(response.message);
-                    response.message.forEach(message => makeToastNotification(message))
+                    if (response.message.length > 1) {
+                        makeToastNotification(response.message)
+                    } else {
+                        makeToastNotification(response.message)
+                    }
                 }
-            },
-            error: function (xhr, status, error) {
+            })
+            .catch(error => {
                 // Handle error
                 console.log(error);
-            },
-        });
+            });
     });
+    
     
 
     handleLikeButton();

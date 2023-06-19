@@ -50,7 +50,7 @@ def create_blog():
     """
     form = CreateBlogForm(request.form)
     
-    if current_user.get_number_of_blogs() == 3:
+    if current_user.get_number_of_blogs() == 5:
         return jsonify({'message': 'A user is limited to 5 blogs only', 'status': 'error'})
 
     if not form.validate():
@@ -58,26 +58,27 @@ def create_blog():
 
     title = form.title.data
     body = form.body.data
-    image = form.image.data
+    image = request.files.get("image")
 
-    blog_data = {
-        "title": title,
-        "content": body,
-        "author_id": current_user.id
-    }
+    blog = Blog(
+        title = title,
+        content = body,
+        author_id = current_user.id
+    )
+
+    db.session.add(blog)
+    db.session.commit()
 
     if image:
-        blog_data["image"] = save_picture(
+        db.session.refresh(blog)
+        blog.image = save_picture(
             location="static/blog_pictures",
             image=image,
             image_quality=10,
             as_thumbnail=False
         )
-
-    blog = Blog(**blog_data)
-
-    db.session.add(blog)
-    db.session.commit()
+        print(blog)
+        db.session.commit()
 
     return jsonify({'message': 'Blog created successfully', 'status': 'success'})
     
