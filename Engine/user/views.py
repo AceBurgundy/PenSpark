@@ -76,6 +76,12 @@ def register_form():
         rendered register.html template with the registration form
     """
     form = RegisterForm()
+
+    if User.query.count() > 10:
+        form.form_errors.append("Your account may not be created")
+        form.form_errors.append("Your the 11th user")
+        form.form_errors.append("There's a limit of 10 users only")
+        
     return render_template("register.html", form=form)
 
 
@@ -89,6 +95,13 @@ def register():
         - Renders the register.html template with form errors if registration is unsuccessful
     """
     form = RegisterForm(request.form)
+
+    if User.query.count() > 10:
+        form.form_errors.append("Account registration failed")
+        form.form_errors.append("To save resources,")
+        form.form_errors.append("We placed a limit of 10 users only")
+        form.form_errors.append("We're sorry for the inconvenience")
+        return render_template("register.html", form=form)
 
     if form.validate_on_submit():
         username_input = form.register_username.data

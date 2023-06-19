@@ -308,6 +308,7 @@ input[type=file]::file-selector-button {
         display: block;
     }
     #logout > p,
+    #about-section > p,
     #blog-buttons__create-button > p,
     #create-blog-close,
     #create-blog__submit > p {
@@ -316,9 +317,23 @@ input[type=file]::file-selector-button {
     #logout-icon,
     #pencil-icon,
     #create-blog-close-icon,
-    #plus-icon {
+    #plus-icon, 
+    #info-icon {
         display: block;
     }
+
+    #info-icon circle:nth-child(2) {
+        stroke: var(--iconFill);
+    }
+    
+    #info-icon polyline:nth-child(3) {
+        stroke: var(--iconFill);
+    }
+    
+    #info-icon circle:nth-child(4) {
+        fill: var(--iconFill);
+    }
+
     #logout-icon,
     #create-blog-close-icon {
         fill: var(--iconFill);

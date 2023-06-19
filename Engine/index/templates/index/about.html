@@ -1,0 +1,22 @@
+{% extends 'layout.html' %} 
+
+{% block component_style -%}
+    <link rel="stylesheet" href="{{ url_for( 'index.static' , filename='about.css') }}">
+{% endblock component_style %}
+
+{% block about -%}
+
+    <div id="about">
+        <h1 id="about__title">Introducing PenSpark: Where Ideas Ignite and Communities Thrive</h1>
+        <p class="about__paragraph">
+            PenSpark is an innovative blog app that brings together individuals from diverse backgrounds and interests, fostering a vibrant space for sharing ideas, sparking conversations, and building communities. With its user-friendly interface and robust features, PenSpark empowers users to connect, engage, and explore a wide range of topics, making it the go-to destination for both seasoned writers and enthusiastic readers.
+        </p>
+        <p class="about__paragraph">
+            At PenSpark, we understand the power of words and the impact they can have. Whether you're an aspiring writer looking to showcase your talent or a curious mind seeking inspiration, PenSpark offers a dynamic platform to express yourself freely. Our app is designed to encourage meaningful discussions, enabling users to interact through comments, upvotes, and personalized feeds tailored to their preferences. With a diverse range of topics spanning from technology and literature to entertainment and lifestyle, PenSpark ensures there's something for everyone, igniting intellectual curiosity and encouraging connections across borders.
+        </p>
+        <p class="about__paragraph">
+            Join the PenSpark community today and embark on a journey of discovery, where your thoughts find a voice and your passions find a home. Unleash your creativity, dive into engaging discussions, and witness the power of collaboration as ideas flourish. With PenSpark, the possibilities are endless, and the impact is profound. Welcome to a world where words come alive and connections are forged, one spark at a time.
+        </p>
+    </div>
+
+{%- endblock about %}

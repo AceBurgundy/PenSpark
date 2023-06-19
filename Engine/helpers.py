@@ -5,6 +5,8 @@ from colorama import init
 from flask import current_app
 from wtforms.validators import ValidationError
 
+ALLOWED_IMAGE_FORMATS = {'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'svg', 'webp', 'heic', 'heif', 'ico', 'raw', 'eps', 'pdf', 'psd', 'ai', 'indd', 'tif', 'xcf', 'jxr', 'jp2', 'wdp', 'hdp', 'jng', 'djvu', 'avif', 'jfif', 'exr', 'cr2', 'nef', 'arw', 'rw2', 'orf', 'dng', 'sr2', 'pef', 'dcr', 'erf', 'mrw', 'raf', 'mos', 'x3f', 'srf', '3fr', 'mef', 'pict', 'hdr', 'svgz', 'wmf', 'emf'}
+
 def save_picture(location, image, image_quality=80, as_thumbnail=True):
     """Save a profile picture.
 

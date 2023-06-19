@@ -30,37 +30,36 @@ function setMode(mode) {
 $(window).on("load", function() {
     $(".message").each(function() {
         const message = $(this);
-        message.text() === ""
-            ? message.remove()
-            : message.toggleClass("active");
+        $(this).text() === ""
+            ? $(this).remove()
+            : $(this).toggleClass("active");
 
         setTimeout(function() {
-            message.toggleClass("active");
+            $(this).toggleClass("active");
         }, 2000);
     });
 });
 
 $(window).on("load", function() {
-    $(".error").each(function() {
-        const error = $(this);
+    const errors = $(".error");
+
+    for (let i = 0; i < errors.length; i++) {
+        const error = $(errors[i]);
         error.html(error.text().toString().replace("_", " "));
-        error.toggleClass("active");
+
+        setTimeout(function() {
+            error.addClass("active");
+        }, 100 * i)
 
         setTimeout(function() {
             error.removeClass("active");
-        }, 3000);
-    });
-});
 
-$(".error").each(function() {
-    const error = $(this);
-    error.css("visibility", "visible");
-    error.css("opacity", 1);
+            setTimeout(function() {
+                error.remove();
+            }, 100);
 
-    setTimeout(function() {
-        error.css("opacity", 0);
-        error.css("visibility", "hidden");
-    }, 1000);
+        }, 1500 * i);
+    }
 });
 
 const nightToggle = $("#night-toggle");

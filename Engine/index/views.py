@@ -1,7 +1,7 @@
 from flask import render_template, request, url_for, Blueprint
 from flask_login import current_user, login_required
 from Engine.models import Blog, Like, User
-from Engine.helpers import save_picture
+from Engine.helpers import ALLOWED_IMAGE_FORMATS, save_picture
 from flask import request
 from flask import jsonify
 from Engine import db
@@ -61,6 +61,26 @@ def _index():
         pageTitle=pageTitle
     )
 
+@index.get("/about")
+def about():
+    """
+    Load the about page.
+
+    Returns:
+        render_template: Rendered HTML template with necessary data.
+    """
+    pageTitle = "DASHBOARD"
+    image_file = url_for(
+        'static',
+        filename='profile_pictures/' + current_user.profile_picture
+    )
+    
+    return render_template(
+        "about.html",
+        image_file=image_file,
+        pageTitle=pageTitle
+    )
+
 @index.get('/blogs')
 def get_all_blogs():
     """
@@ -99,36 +119,42 @@ def create_blog():
     Returns:
         JSON: Success or error message regarding the blog creation.
     """
-    if current_user.get_number_of_blogs() == 5:
+    if current_user.get_number_of_blogs() == 3:
         return jsonify({'message': 'A user is limited to 5 blogs only', 'status': 'error'})
 
     title = request.form.get('title')
     body = request.form.get('body')
     image = request.files.get('image')
-    
+
     if not title or not body:
         return jsonify({'message': 'Fields cannot be empty', 'status': 'error'})
 
     if len(title) > 100:
         return jsonify({'message': 'Title cannot be greater than 100', 'status': 'error'})
-        
+
+    if len(body) > 750:
+        return jsonify({'message': 'Body cannot be greater than 750', 'status': 'error'})
+
     if image:
+        if image.filename.lower().split('.')[-1] not in ALLOWED_IMAGE_FORMATS:
+            return jsonify({'message': 'Not an image', 'status': 'error'})
+
         blog = Blog(
-            title=title, 
-            content=body, 
-            author_id=current_user.id, 
+            title=title,
+            content=body,
+            author_id=current_user.id,
             image=save_picture(
-                location="static/blog_pictures", 
-                image=image, 
+                location="static/blog_pictures",
+                image=image,
                 image_quality=10,
                 as_thumbnail=False
             )
         )
     else:
         blog = Blog(
-            title=title, 
-            content=body, 
-            author_id=current_user.id, 
+            title=title,
+            content=body,
+            author_id=current_user.id,
         )
 
     db.session.add(blog)
