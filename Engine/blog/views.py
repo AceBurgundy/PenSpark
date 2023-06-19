@@ -1,12 +1,116 @@
 from flask import redirect, render_template, request, url_for, Blueprint
+from Engine.blog.forms import CreateBlogForm
+from Engine.helpers import ALLOWED_IMAGE_FORMATS, save_picture
 from flask_login import current_user, login_required
-from Engine.models import Blog, Comment, User
+from Engine.models import Blog, Comment, Like, User
 from Engine import db
 from flask import request
 from flask import jsonify
 
 blog = Blueprint('blog', __name__, template_folder='templates/blog',
                   static_folder='static/blog', )
+
+@blog.get('/blogs')
+def get_all_blogs():
+    """
+    Retrieve all blogs excluding the specified post IDs.
+
+    Returns:
+        JSON: List of blogs with relevant information.
+    """
+    post_ids = request.args.getlist('post_ids')
+    blogs = Blog.query.filter(~Blog.id.in_(post_ids)).all()
+    blog_list = []
+    for blog in blogs:
+        user_comment = (' '.join(blog.content.split()[:15]) + " ...see more") if len(blog.content.split()) >= 15 else blog.content
+        author_username = User.query.filter_by(id=blog.author_id).first().username
+
+        likes = [like.user_id for like in blog.likes]
+
+        blog_list.append({
+            'id': blog.id,
+            'title': blog.title,
+            'content': user_comment,
+            'author': author_username,
+            'likes': len(blog.likes),
+            'liked_by_user': bool(likes.count(current_user.id)),
+            'comments': len(blog.comments),
+            'date_authored': blog.date_posted.strftime('%B %d, %Y'),
+            'time_authored': blog.date_posted.strftime('%I:%M%p')
+        })
+    return jsonify(blog_list)
+
+@blog.post('/blogs')
+def create_blog():
+    """
+    Create a new blog post.
+
+    Returns:
+        JSON: success or error message regarding the blog creation.
+    """
+    form = CreateBlogForm(request.form)
+    
+    if current_user.get_number_of_blogs() == 3:
+        return jsonify({'message': 'A user is limited to 5 blogs only', 'status': 'error'})
+
+    if not form.validate():
+        return jsonify({'message': [field.errors for field in form if field.errors], 'status': 'error'})
+
+    title = form.title.data
+    body = form.body.data
+    image = form.image.data
+
+    blog_data = {
+        "title": title,
+        "content": body,
+        "author_id": current_user.id
+    }
+
+    if image:
+        blog_data["image"] = save_picture(
+            location="static/blog_pictures",
+            image=image,
+            image_quality=10,
+            as_thumbnail=False
+        )
+
+    blog = Blog(**blog_data)
+
+    db.session.add(blog)
+    db.session.commit()
+
+    return jsonify({'message': 'Blog created successfully', 'status': 'success'})
+    
+@blog.post('/blogs/<int:blog_id>/like')
+@login_required
+def like_blog(blog_id):
+    """
+    Like or unlike a blog post.
+
+    Args:
+        blog_id (int): ID of the blog post.
+
+    Returns:
+        JSON: Success or error message regarding the like operation.
+    """
+    user = current_user.id
+    blog = Blog.query.get(blog_id)
+
+    if blog:
+        if user in [like.user_id for like in blog.likes]:
+            # User already liked the blog, remove the like
+            like = Like.query.filter_by(user_id=user, blog_id=blog.id).first()
+            db.session.delete(like)
+            db.session.commit()
+            return jsonify({'message': 'unliked', 'status' : 'success'})
+        else:
+            # User hasn't liked the blog, add the like
+            like = Like(user_id=user, blog_id=blog.id)
+            db.session.add(like)
+            db.session.commit()
+            return jsonify({'message': 'liked', 'status' : 'success'})    
+    else:
+        return jsonify({'message': 'Blog not found', 'status' : 'error'}), 404
 
 @blog.get('/blog/<int:blog_id>')
 @login_required
