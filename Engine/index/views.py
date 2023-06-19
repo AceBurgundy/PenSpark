@@ -119,7 +119,7 @@ def create_blog():
     Returns:
         JSON: Success or error message regarding the blog creation.
     """
-    if current_user.get_number_of_blogs() == 5:
+    if current_user.get_number_of_blogs() == 3:
         return jsonify({'message': 'A user is limited to 5 blogs only', 'status': 'error'})
 
     title = request.form.get('title')
