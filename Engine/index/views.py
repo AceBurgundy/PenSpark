@@ -1,7 +1,7 @@
 from flask import render_template, request, url_for, Blueprint
 from flask_login import current_user, login_required
 from Engine.models import Blog, Like, User
-from Engine.helpers import save_picture
+from Engine.helpers import ALLOWED_IMAGE_FORMATS, save_picture
 from flask import request
 from flask import jsonify
 from Engine import db
@@ -125,30 +125,36 @@ def create_blog():
     title = request.form.get('title')
     body = request.form.get('body')
     image = request.files.get('image')
-    
+
     if not title or not body:
         return jsonify({'message': 'Fields cannot be empty', 'status': 'error'})
 
     if len(title) > 100:
         return jsonify({'message': 'Title cannot be greater than 100', 'status': 'error'})
-        
+
+    if len(body) > 750:
+        return jsonify({'message': 'Body cannot be greater than 750', 'status': 'error'})
+
     if image:
+        if image.filename.lower().split('.')[-1] not in ALLOWED_IMAGE_FORMATS:
+            return jsonify({'message': 'Not an image', 'status': 'error'})
+
         blog = Blog(
-            title=title, 
-            content=body, 
-            author_id=current_user.id, 
+            title=title,
+            content=body,
+            author_id=current_user.id,
             image=save_picture(
-                location="static/blog_pictures", 
-                image=image, 
+                location="static/blog_pictures",
+                image=image,
                 image_quality=10,
                 as_thumbnail=False
             )
         )
     else:
         blog = Blog(
-            title=title, 
-            content=body, 
-            author_id=current_user.id, 
+            title=title,
+            content=body,
+            author_id=current_user.id,
         )
 
     db.session.add(blog)
