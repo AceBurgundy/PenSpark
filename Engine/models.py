@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 
 from flask import current_app, url_for
+from pytz import utc
 from Engine import db, login_manager
 from flask_login import UserMixin
 
@@ -19,7 +20,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     profile_picture = db.Column(db.String(100), nullable=False, default='default.jpg')
     password = db.Column(db.String(200), nullable=False)
-    creation_date = db.Column(db.DateTime(), default=datetime.now)
+    creation_date = db.Column(db.DateTime(), default=datetime.now(utc))
     last_online = db.Column(db.DateTime(), default=datetime.now, onupdate=datetime.now)
     night_mode = db.Column(db.Boolean(), nullable=False, default=True)
 
@@ -51,7 +52,7 @@ class Blog(db.Model):
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.String(750), nullable=False)
     image = db.Column(db.String(100))
-    date_posted = db.Column(db.DateTime(), default=datetime.now)
+    date_posted = db.Column(db.DateTime(), default=datetime.now(utc))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     likes = db.relationship('Like', backref='blog', lazy=True, cascade="all, delete-orphan")
