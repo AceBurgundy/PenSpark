@@ -79,7 +79,6 @@ class LoginForm(FlaskForm):
     login_email = EmailField(u'Email', id="login-email", validators=[
         DataRequired(message="Should be a working email"), 
         Length(min=2,max=120),
-        validate_email,
         Email(),
     ])
     
