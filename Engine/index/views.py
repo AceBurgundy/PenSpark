@@ -61,6 +61,26 @@ def _index():
         pageTitle=pageTitle
     )
 
+@index.get("/about")
+def about():
+    """
+    Load the about page.
+
+    Returns:
+        render_template: Rendered HTML template with necessary data.
+    """
+    pageTitle = "DASHBOARD"
+    image_file = url_for(
+        'static',
+        filename='profile_pictures/' + current_user.profile_picture
+    )
+    
+    return render_template(
+        "about.html",
+        image_file=image_file,
+        pageTitle=pageTitle
+    )
+
 @index.get('/blogs')
 def get_all_blogs():
     """
