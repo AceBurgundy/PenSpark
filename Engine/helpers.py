@@ -47,9 +47,8 @@ class CheckProfanity():
 
     """
 
-    def __init__(self, message=None, enumerate_words=False):
-        self.message = message or "not saved. Vulgar word/s found"
-        self.enumerate_words = enumerate_words
+    def __init__(self, message=None):
+        self.message = message
 
     def __call__(self, form, field):
         """
@@ -59,21 +58,22 @@ class CheckProfanity():
             ValidationError: If vulgar words are found in the input field.
 
         """
-        result = [word for word in profanity if word in ("".join(word for word in str(
-            field.data) if word.isalpha() or word.isnumeric() or word == " ")).split(" ")]
+        result = [
+            word for word in profanity 
+                if word in (
+                    "".join(
+                        word for word in str(field.data).lower() 
+                            if word.isalpha() or word.isnumeric() or word == " ")).split(" ")
+            ]
 
         if len(result) > 0:
-            if self.message:
-                raise ValidationError(self.message)
-
-            if not self.message and self.enumerate_words:
-                raise ValidationError(word for word in result.split(
-                    ",") + (" are " if len(result) > 1 else " is ") + "not accepted")
-
-            if self.message and self.enumerate_words:
-                raise ValidationError(word for word in result.split(
-                    ",") + (" are " if len(result) > 1 else " is ") + self.message)
-
+            # no message and do not enumerate words
+            if self.message is None:
+                raise ValidationError("Vulgar word/s found")
+            else:
+                for word in result:
+                    raise ValidationError(f"{word} {self.message}")
+                
         else:
             init(autoreset=True)
             print(f"CheckProfanity for {field.name}", "\033[1;32mpassed")
