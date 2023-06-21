@@ -1,43 +1,48 @@
 import makeToastNotification from "../../../static/helper.js";
 import { eyeToggle } from "/static/helper.js";
 
+const element = (className) => document.querySelector(className)
+
 eyeToggle(
-    document.getElementById("logpassword-icon-container"),
-    document.getElementById("logpassword"),
-    document.getElementById("logeye"),
-    document.getElementById("log-eye-off")
+    element("#logpassword-icon-container"),
+    element("#logpassword"),
+    element("#logeye"),
+    element("#log-eye-off")
 );
 
-const toRegister = document.querySelector("#to-register");
+const toRegister = element("#to-register");
 
 toRegister.addEventListener("click", () => {
-    window.location = "/register"
-})
+    window.location = "/register";
+});
 
-$("#login-button").click(function (e) {
-    e.preventDefault();
+element("#login-button").addEventListener("click", (event) => {
+    
+    event.preventDefault();
 
-    const formData = $(".authentication-form").serialize();
+    const formData = new FormData(element(".authentication-form"));
 
-    $.ajax({
-        type: "POST",
-        url: $(".authentication-form").data("route"),
-        data: formData,
-        success: function (response) {
-            if (response.status === "success") {
-                if (response.url) {
-                    window.location.href = response.url;
-                }
-            } else {
-                if (response.message) {
-                    response.message.forEach((message) => {
-                        makeToastNotification(message);
-                    });
-                }
+    fetch(element(".authentication-form").getAttribute("data-route"), {
+        method: "POST",
+        body: formData,
+    })
+    .then((response) => response.json())
+    .then((response) => {
+
+        if (response.status === "success") {
+            if (response.url) {
+                window.location.href = response.url;
             }
-        },
-        error: function (xhr, status, error) {
-            console.log(xhr.responseText);
-        },
+        } else {
+            if (response.message) {
+                response.message.forEach((message) => {
+                    makeToastNotification(message);
+                });
+            }
+        }
+
+    })
+    .catch((error) => {
+        console.log(error);
     });
 });
