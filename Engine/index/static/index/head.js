@@ -1,113 +1,100 @@
 import makeToastNotification from "../../../static/helper.js";
 
-function setMode(mode) {
+const element = (className) => document.querySelector(className);
+const elements = (className) => document.querySelectorAll(className);
 
+const setMode = (mode) => {
     if (mode === "Night") {
-        $("html").addClass("night");
+        element("html").classList.add("night");
     }
     if (mode === "Day") {
-        $("html").removeClass("night");
+        element("html").classList.remove("night");
     }
     
-    $.ajax({
-        url: "/night-mode",
-        type: "POST",
-        data: { mode: mode },
-        success: function (response) {
-            if (response.status === true) {
-                makeToastNotification(mode)
-            } else {
-                makeToastNotification(response.message);
-            }
-        }.bind(this),
-        error: function (xhr, status, error) {
-            // Handle error
-            console.log(error);
-        },
+    fetch("/night-mode", {
+        method: "POST",
+        body: JSON.stringify({ mode : mode }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        if (response.status === true) {
+            makeToastNotification(mode);
+        } else {
+            makeToastNotification(response.message);
+        }
+    })
+    .catch(error => {
+        console.log(error);
+    });
+};
+
+window.addEventListener("load", function() {
+    const messages = elements(".message");
+    
+    messages.forEach(message => {
+        if (message.textContent === "") {
+            message.remove();
+        } else {
+            message.classList.toggle("active");
+            setTimeout(() => {
+                message.classList.toggle("active");
+            }, 2000);
+        }
+    });
+});
+
+const nightToggle = element("#night-toggle");
+
+if (nightToggle) {
+    nightToggle.addEventListener("click", function(e) {
+        if (element("html").classList.contains("night")) {
+            setMode("Day");
+            nightToggle.textContent = "Day";
+        } else {
+            nightToggle.textContent = "Night";
+            setMode("Night");
+        }
     });
 }
 
-$(window).on("load", function() {
-    $(".message").each(function() {
-        const message = $(this);
-        $(this).text() === ""
-            ? $(this).remove()
-            : $(this).toggleClass("active");
+const sunIcon = element("#sun");
+const sunOffIcon = element("#sun-off");
 
-        setTimeout(function() {
-            $(this).toggleClass("active");
-        }, 2000);
+if (sunOffIcon) {
+    sunOffIcon.addEventListener("click", function() {
+        setMode("Night");
+        sunOffIcon.style.display = "none";
+        sunIcon.style.display = "block";
     });
-});
+}
 
-$(window).on("load", function() {
-    const errors = $(".error");
-
-    for (let i = 0; i < errors.length; i++) {
-        const error = $(errors[i]);
-        error.html(error.text().toString().replace("_", " "));
-
-        setTimeout(function() {
-            error.addClass("active");
-        }, 100 * i)
-
-        setTimeout(function() {
-            error.removeClass("active");
-
-            setTimeout(function() {
-                error.remove();
-            }, 100);
-
-        }, 1500 * i);
-    }
-});
-
-const nightToggle = $("#night-toggle");
-
-nightToggle.on("click", function(e) {
-    if ($("html").hasClass("night")) {
-        setMode("Day")
-        nightToggle.text("Day");
-    } else {
-        nightToggle.text("Night");
-        setMode("Night")
-    }
-});
-
-const sunIcon = $("#sun");
-const sunOffIcon = $("#sun-off");
-
-sunOffIcon.on("click", function() {
-    setMode("Night")
-    sunOffIcon.css("display", "none");
-    sunIcon.css("display", "block");
-});
-
-sunIcon.on("click", function() {
-    setMode("Day")
-    sunIcon.css("display", "none");
-    sunOffIcon.css("display", "block");
-});
+if (sunIcon) {
+    sunIcon.addEventListener("click", function() {
+        setMode("Day");
+        sunIcon.style.display = "none";
+        sunOffIcon.style.display = "block";
+    });
+}
 
 const currentPath = window.location.pathname;
 
 if (currentPath !== '/login' && currentPath !== '/register') {
-    $.ajax({
-        url: "/night-mode",
-        type: "GET",
-        success: function (response) {
-            
-            if (response.mode === false) {
-                $("html").removeClass("night");
-            }
-    
-            if (response.mode === true) {
-                $("html").addClass("night");
-            }
-    
-        }.bind(this)
+    fetch("/night-mode", {
+        method: "GET"
     })
+    .then(response => response.json())
+    .then(response => {
+        if (response.mode === false) {
+            element("html").classList.remove("night");
+        }
+        if (response.mode === true) {
+            element("html").classList.add("night");
+        }
+    })
+    .catch(error => {
+        console.log(error);
+    });
 }
-
-
-
