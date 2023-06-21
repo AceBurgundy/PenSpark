@@ -84,8 +84,10 @@ def change_password():
         response (str): JSON response indicating the success or failure of the password change.
     """
 
-    old_password = request.form.get('oldPassword')
-    new_password = request.form.get('newPassword')
+    data = request.get_json()
+
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
 
     if not new_password or not old_password:
         return jsonify({'status': 'success', 'message': 'Fields cannot be empty'})

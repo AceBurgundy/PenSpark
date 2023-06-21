@@ -217,6 +217,13 @@
     }
 }
 
+@media screen and (orientation: landscape) {
+    .form-save-button {
+        background-color: inherit;
+        border: none;
+    }
+}
+
 @media screen and (orientation: portrait) and (max-width: 330px) {
     #profile-bottom > * {
         font-size: 0.8rem;

@@ -14,12 +14,14 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, 150%);
+    transform: translate(-50%, 350%);
     border: 1px solid var(--accent);
     background-color: var(--background);
     padding: calc(.5rem + .5vw);
     z-index: 3;
     opacity: 0;
+    pointer-events: none;
+    transition: 300ms ease;
 }
 
 #delete-prompt.active {
@@ -80,6 +82,10 @@
     padding: calc(0.3rem + 0.3vh);
     width: fit-content;
     cursor: pointer;
+}
+
+.comment-box__delete > * {
+    pointer-events: none;
 }
 
 .comment-box__delete > p {
