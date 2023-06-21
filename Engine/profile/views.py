@@ -27,7 +27,7 @@ def get_profile(user_id):
     form = profileForm()
     delete_account_form = deleteAccountForm()
 
-    image_file = url_for('static', filename='profile_pictures/' + user.profile_picture)
+    image_file = url_for('static', filename='profile_pictures/' + current_user.profile_picture)
 
     form.username.data = user.username
     form.banner.data = user.banner

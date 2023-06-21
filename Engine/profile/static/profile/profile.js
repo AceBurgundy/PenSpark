@@ -27,15 +27,33 @@ element("#profile-top-controls").innerHTML += `
   `;
 
 const targetElement =
-    getCurrentOrientation() === "portrait"
+    element(
+        getCurrentOrientation() === "portrait"
         ? "#profile-bottom"
-        : "#profile-top-controls";
+        : "#profile-top-controls"
+    );
 
 const changePasswordBtn = `<div class="button" id="change-password">Change password</div>`;
 const deleteAccountBtn = `<div class="button" id="delete-account-toggle">Delete Account</div>`;
 
-element(targetElement).insertAdjacentHTML("afterbegin", changePasswordBtn);
-element(targetElement).insertAdjacentHTML("afterbegin", deleteAccountBtn);
+function isAllowed() {
+    if (targetElement) {
+        if (targetElement.hasAttribute("data-user-id") && targetElement.hasAttribute("data-current-user-id")) {
+            if (targetElement.getAttribute("data-user-id") === targetElement.getAttribute("data-current-user-id")) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return true
+        }
+    } 
+}
+
+if (isAllowed()) {
+    targetElement.insertAdjacentHTML("afterbegin", changePasswordBtn);
+    targetElement.insertAdjacentHTML("afterbegin", deleteAccountBtn);
+}
 
 const deleteAccountToggle = element("#delete-account-toggle");
 const profilePictureInput = element("#profile-picture-input");
@@ -70,18 +88,20 @@ const backgroundColorElements = [bannerInput, usernameInput];
 getCurrentOrientation() === "landscape"
     && [...profileTopControls.children].forEach(child => child.classList.remove("button"))
 
-editButton.addEventListener("click", event => {
-    getCurrentOrientation() === "portrait"
-        ? (bottomSave.style.display = "block")
-        : (topSave.style.display = "block");
-
-    blockElements.forEach((element) => (element.style.display = "block"));
-    backgroundColorElements.forEach(
-        (element) => (element.style.backgroundColor = "var(--input-background)")
-    );
-    readonlyElements.forEach((element) => element.removeAttribute("readonly"));
-    event.target.style.display = "none"
-});
+if (editButton) {
+    editButton.addEventListener("click", event => {
+        getCurrentOrientation() === "portrait"
+            ? (bottomSave.style.display = "block")
+            : (topSave.style.display = "block");
+    
+        blockElements.forEach((element) => (element.style.display = "block"));
+        backgroundColorElements.forEach(
+            (element) => (element.style.backgroundColor = "var(--input-background)")
+        );
+        readonlyElements.forEach((element) => element.removeAttribute("readonly"));
+        event.target.style.display = "none"
+    });
+}
 
 cancelButton.addEventListener("click", event => {
     getCurrentOrientation() === "portrait"
@@ -105,10 +125,12 @@ const changePasswordToggle = element("#change-password");
 const newPasswordCancel = element("#new-password-close-button");
 const newPasswordForm = element("#new-password-modal");
 
-changePasswordToggle.addEventListener("click", () => {
-    formBackground.classList.add("active");
-    newPasswordForm.classList.add("active");
-});
+if (changePasswordToggle) {
+    changePasswordToggle.addEventListener("click", () => {
+        formBackground.classList.add("active");
+        newPasswordForm.classList.add("active");
+    });
+}
 
 newPasswordCancel.addEventListener("click", () => {
     formBackground.classList.remove("active");
@@ -164,10 +186,12 @@ element("#new-password-update-button").addEventListener("click", (event) => {
     });
 });
 
-deleteAccountToggle.addEventListener("click", () => {
-    formBackground.classList.add("active");
-    element("#delete-account-form").classList.add("active");
-});
+if (deleteAccountToggle) {
+    deleteAccountToggle.addEventListener("click", () => {
+        formBackground.classList.add("active");
+        element("#delete-account-form").classList.add("active");
+    });
+}
 
 element("#delete-account-cancel").addEventListener("click", () => {
     formBackground.classList.remove("active");
