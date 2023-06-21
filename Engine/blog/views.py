@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from flask import redirect, render_template, request, url_for, Blueprint
 from Engine.blog.forms import CreateBlogForm
 from Engine.helpers import ALLOWED_IMAGE_FORMATS, save_picture
@@ -59,17 +60,23 @@ def create_blog():
     title = form.title.data
     body = form.body.data
     image = request.files.get("image")
+    time = request.form.get("time")
 
     blog = Blog(
         title = title,
         content = body,
-        author_id = current_user.id
+        author_id = current_user.id,
+        date_posted = datetime.strptime(f"{date.today()} {time}", '%Y-%m-%d %H:%M:%S.%f')
     )
 
     db.session.add(blog)
     db.session.commit()
 
     if image:
+
+        if image.filename.lower().split('.')[-1] not in ALLOWED_IMAGE_FORMATS:
+            return jsonify({'message': 'Only image files are allowed for the image.', 'status': 'error'})
+
         db.session.refresh(blog)
         blog.image = save_picture(
             location="static/blog_pictures",
@@ -77,7 +84,6 @@ def create_blog():
             image_quality=10,
             as_thumbnail=False
         )
-        print(blog)
         db.session.commit()
 
     return jsonify({'message': 'Blog created successfully', 'status': 'success'})

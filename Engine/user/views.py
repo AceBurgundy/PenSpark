@@ -32,6 +32,7 @@ def login():
         - JSON response with status=error, error message, and form errors if login is unsuccessful
     """
     form = LoginForm(request.form)
+
     email_input = form.login_email.data.strip()
     password_input = form.login_password.data
 
@@ -97,13 +98,18 @@ def register():
     form = RegisterForm(request.form)
 
     if User.query.count() > 10:
-        form.form_errors.append("Account registration failed")
-        form.form_errors.append("To save resources,")
-        form.form_errors.append("We placed a limit of 10 users only")
-        form.form_errors.append("We're sorry for the inconvenience")
-        return render_template("register.html", form=form)
+        return jsonify({
+            'status': 'error', 
+            'message': [
+                "Account registration failed",
+                "To save resources,",
+                "We placed a limit of 10 users only",
+                "We're sorry for the inconvenience"
+            ]
+        })
 
-    if form.validate_on_submit():
+    if form.validate():
+
         username_input = form.register_username.data
         email_input = form.register_email.data
         password_input = form.register_password.data
@@ -117,10 +123,17 @@ def register():
                 password=encryptedPassword))
 
             db.session.commit()
-            flash("Successfully created account.")
-            return redirect(url_for('user.login_form'))
+            return jsonify({
+                'status': 'success', 
+                'url': url_for('user.login_form')
+            })
         except:
-            form.form_errors.append("Registration Unsuccessful. An error occurred.")
-            return render_template("register.html", form=form, errors=form.form_errors)
+            return jsonify({
+                'status': 'error', 
+                'message': ["Error in registering user"]
+            })
     else:
-        return render_template("register.html", form=form)
+        return jsonify({
+            'status': 'error', 
+            'message': [field.errors for field in form if field.errors]
+        })

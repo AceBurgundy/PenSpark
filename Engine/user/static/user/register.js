@@ -1,73 +1,177 @@
+import makeToastNotification from "../../../static/helper.js";
 import { eyeToggle } from "/static/helper.js";
 
-const toLogin = document.querySelector("#to-login");
+const element = (className) => document.querySelector(className);
+
+element("#to-login").addEventListener("click", () => window.location = "/login");
+
+const pattern = /(where)|(select)|(update)|(delete)|(.schema)|(from)|(drop)|[0-9]|[!@#$%^&*()_+}{":?></*+[;'./,]|-/gi;
+const userNameCircle = element("#first-name-circle");
+const formRegister = element("#form-register");
+const emailCircle = element("#email-circle");
+const regPassword = element("#regpassword");
+const email = element("#register-email");
+const userName = element("#username");
 
 eyeToggle(
-    document.getElementById("regpassword-icon-container"),
-    document.getElementById("regpassword"),
-    document.getElementById("regeye"),
-    document.getElementById("reg-eye-off")
+    element("#regpassword-icon-container"),
+    regPassword,
+    element("#regeye"),
+    element("#reg-eye-off")
 );
 
-toLogin.addEventListener("click", () => {
-    window.location = "/login";
-});
+let stillHasErrors = true;
 
-document.querySelector("#form-register").addEventListener("keyup", () => {
-    let form = document.getElementById("form-register");
-    const userName = document.getElementById("username").value;
-    const regPassword = document.getElementById("regpassword");
-    const email = document.getElementById("register-email").value;
-    const pattern =
-        /(where)|(select)|(update)|(delete)|(.schema)|(from)|(drop)|[0-9]|[!@#$%^&*()_+}{":?></*+[;'./,]|-/gi;
-    /* Dot Icons */
-    const userNameCircle = document.getElementById("first-name-circle");
-    const emailCircle = document.getElementById("email-circle");
+function validateForm(event = null) {
 
-    const errorMessages = [
-        "Username must have at least 3 characters.",
-        "Username must have at most 30 characters.",
-        "Username contains invalid characters.",
-        "Invalid email format.",
-        "Password contains restricted words or characters.",
-        "Password must contain at least one number and one symbol.",
-    ];
-
-    let validations = [
-        userName.length > 2
-            ? (userNameCircle.style.fill = "green")
-            : (userNameCircle.style.fill = "red"),
-        userName.length < 30
-            ? (userNameCircle.style.fill = "green")
-            : (userNameCircle.style.fill = "red"),
-        userName.match(pattern) || userName.trim() === ""
-            ? (userNameCircle.style.fill = "red")
-            : (userNameCircle.style.fill = "green"),
-        email.match(/[@]/) && email.match(".com")
-            ? (emailCircle.style.fill = "green")
-            : (emailCircle.style.fill = "red"),
-        regPassword.value.match(
-            /(where)|(select)|(update)|(delete)|(.schema)|(from)|(drop)|-/gi
-        )
-            ? (regPassword.style.color = "red")
-            : (regPassword.style.color = "green"),
-        regPassword.value.match(/[0-9]/) &&
-        regPassword.value.match(/[!@#$%^&*()_+}{":?></*+[;'./,]/)
-            ? (regPassword.style.color = "green")
-            : (regPassword.style.color = "red"),
-    ];
-
-    validations.forEach((validation, index) => {
-        if (validation === false) {
-            makeToastNotification(errorMessages[index]);
+    function validateUsername() {
+        if (userName.value.trim() !== "") {
+            const usernameValidations = [
+                userName.value.length > 2,
+                userName.value.length < 30,
+                !userName.value.match(pattern),
+                userName.value.trim() !== ""
+            ];
+    
+            if (!usernameValidations[0]) {
+                userNameCircle.style.fill = "red";
+                makeToastNotification("Username should have at least 3 characters.");
+            } else if (!usernameValidations[1]) {
+                userNameCircle.style.fill = "red";
+                makeToastNotification("Username should have at most 30 characters.");
+            } else if (!usernameValidations[2]) {
+                userNameCircle.style.fill = "red";
+                makeToastNotification("Username should not contain special characters or numbers.");
+            } else if (!usernameValidations[3]) {
+                userNameCircle.style.fill = "red";
+                makeToastNotification("Username should not be empty.");
+            } else {
+                userNameCircle.style.fill = "green";
+            }
+    
+            stillHasErrors = usernameValidations.includes(false) ? true : false
         }
-    });
+    }
 
-    form.addEventListener("submit", (event) => {
-        if (validations.includes(false)) {
-            event.preventDefault();
+    function validateRegister() {
+        if (email.value.trim() !== "") {
+            const emailValidations = [
+                email.value.match(/[@]/),
+                email.value.match(".com"),
+                email.value.trim() !== ""
+            ];
+            
+            if (emailValidations[0] === null) {
+                emailCircle.style.fill = "red";
+                makeToastNotification("Missing @");
+            } else if (emailValidations[1] === null) {
+                emailCircle.style.fill = "red";
+                makeToastNotification("Missing .com");
+            } else if (!emailValidations[2]) {
+                emailCircle.style.fill = "red";
+                makeToastNotification("Email cannot be empty.");
+            } else {
+                emailCircle.style.fill = "green";
+            }
+    
+            stillHasErrors = emailValidations.some(element => element === null || element === false);
+        }
+    }
+    
+    function validatePassword() {
+        if (regPassword.value.trim() !== "") {
+            const passwordValidations = [
+                !regPassword.value.match(/(where)|(select)|(update)|(delete)|(.schema)|(from)|(drop)|-/gi),
+                regPassword.value.match(/[0-9]/),
+                regPassword.value.match(/[!@#$%^&*()_+}{":?></*+[;'./,]/),
+            ];
+    
+            if (!passwordValidations[0]) {
+                regPassword.style.color = "red";
+                makeToastNotification("Password should not contain forbidden keywords.");
+            } else if (passwordValidations[1] === null || passwordValidations[2] === null) {
+                regPassword.style.color = "red";
+                makeToastNotification("Password should contain at least one number and one special character.");
+            } else {
+                regPassword.style.color = "green";
+            }
+    
+            stillHasErrors = passwordValidations.some(element => element === null || element === false);
+        }
+    }
+
+    // calls the appropriate function for their designated inputs
+    if (event) {
+        const target = event.target;
+
+        if (target.id === "regpassword") {
+            validatePassword()
+        }
+    
+        if (target.id === "register-email") {
+            validateRegister()
+        }
+    
+        if (target.id === "username") {
+            validateUsername()
+        }
+    }
+
+    if (!event) {
+        validatePassword()
+        validateRegister()
+        validateUsername()
+    }
+}
+
+[...formRegister.querySelectorAll("input")].forEach(element => 
+    element.addEventListener("click", event => {
+        validateForm(event)
+    }
+))
+
+let intervalId = setInterval(() => {
+    const filledElements = document.querySelectorAll("input:-webkit-autofill");
+
+    if (filledElements.length > 0) {
+      clearInterval(intervalId); // Stop the interval
+      validateForm()
+    }
+  }, 100);
+  
+formRegister.addEventListener("keyup", event => validateForm(event, true));
+formRegister.addEventListener("input", event => validateForm(event, true));
+element("#register-button").addEventListener("click", (event) => {
+    
+    validateForm()
+    
+    if (stillHasErrors) return
+
+    event.preventDefault();
+
+    const formData = new FormData(element("#form-register"));
+
+    fetch(element("#form-register").getAttribute("data-route"), {
+        method: "POST",
+        body: formData,
+    })
+    .then((response) => response.json())
+    .then((response) => {
+
+        if (response.status === "success") {
+            if (response.url) {
+                window.location.href = response.url;
+            }
         } else {
-            return true;
+            if (response.message) {
+                response.message.forEach((message) => {
+                    makeToastNotification(message);
+                });
+            }
         }
+
+    })
+    .catch((error) => {
+        console.log(error);
     });
 });

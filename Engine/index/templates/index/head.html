@@ -17,13 +17,13 @@
     <meta name="description" content="PenSpark - A community-driven platform for sharing and discussing ideas.">
     <meta name="keywords" content="PenSpark, community, sharing, discussion">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <!-- <link rel="canonical" href="https://www.penspark.com"> -->
+    <link rel="canonical" href="https://www.zemho.pythonanywhere.com">
 
     <!-- Open Graph meta tags -->
     <meta property="og:title" content="PenSpark">
     <meta property="og:description" content="A community-driven platform for sharing and discussing ideas.">
     <!-- <meta property="og:image" content="https://www.penspark.com/images/og-image.jpg"> -->
-    <!-- <meta property="og:url" content="https://www.penspark.com"> -->
+    <meta property="og:url" content="https://www.zemho.pythonanywhere.com">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card meta tags -->
@@ -32,7 +32,6 @@
     <meta name="twitter:description" content="A community-driven platform for sharing and discussing ideas.">
     <!-- <meta name="twitter:image" content="https://www.penspark.com/images/twitter-card-image.jpg"> -->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ url_for('index.static', filename='head.js') }}" type="module"></script>
 
     {% block script -%}{%- endblock script %}
@@ -45,10 +44,12 @@
 
     {% with messages=get_flashed_messages() -%}
     <ul class="flashes">
-        {% if messages -%} {% for message in messages -%}
-        <li class="message">{{ message }}</li>
-        {%- endfor %} {%- else -%}
-        <li class="message">{{ message }}</li>
+        {% if messages -%} 
+            {% for message in messages -%}
+                <li class="message">{{ message }}</li>
+            {%- endfor %} 
+        {%- else -%}
+            <li class="message">{{ message }}</li>
         {%- endif %}
     </ul>
     {%- endwith %}

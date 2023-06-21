@@ -27,8 +27,9 @@ def set_current_mode():
     Returns:
         JSON: Success status of setting the mode.
     """
-    mode = request.form.get("mode")
-
+    data = request.get_json()
+    mode = data.get('mode')
+    
     if mode == "Day":
         current_user.night_mode = False
         db.session.commit()

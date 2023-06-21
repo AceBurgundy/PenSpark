@@ -50,9 +50,9 @@ class Blog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.String(750), nullable=False)
+    content = db.Column(db.String(3000), nullable=False)
     image = db.Column(db.String(100))
-    date_posted = db.Column(db.DateTime(), default=datetime.now(utc))
+    date_posted = db.Column(db.DateTime(), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     likes = db.relationship('Like', backref='blog', lazy=True, cascade="all, delete-orphan")

@@ -84,16 +84,13 @@ class LoginForm(FlaskForm):
     
     def validate_login_email(self, login_email):
                 
-        if "@" not in login_email.data and ".com" not in login_email.data:
-            raise ValidationError("Not an email")
-        
         if not login_email.data:
             raise ValidationError("Email cannot be empty")
         
         user = User.query.filter_by(email=login_email.data).first()
 
         if not user:
-            raise ValidationError("Email not found or User not yet registered")
+            raise ValidationError("\nEmail not found or User not yet registered")
     
     login_password = PasswordField(u'Password', id="logpassword", validators=[
         DataRequired("Please add a password"), 
