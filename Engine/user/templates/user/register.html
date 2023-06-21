@@ -10,24 +10,9 @@
 
 {%- block register -%}
 
-    <!-- displays form errors -->
-    {% if form.errors %}
-        <ul class="error-list">
-            {% for field_name, field_errors in form.errors|dictsort if field_errors %} 
-                {% for error in field_errors %} 
-                    {% if field_name %}
-                        <div class="error">{{ field_name }} {{ error }}</div>
-                    {% else %}
-                        <div class="error">{{ error }}</div>
-                    {% endif %} 
-                {% endfor %} 
-            {% endfor %}
-        </ul>
-    {% endif %}
-
     <div id="authentication">
 
-        <form class="authentication-form" id="form-register" action="{{ url_for('user.register') }}" method="post">
+        <form class="authentication-form" id="form-register" data-route="{{ url_for('user.register') }}">
             
             <p id="authentication-header">Create Account</p>
 
@@ -66,9 +51,9 @@
 
             <div class="wrapper">
                 <p class="form-tag">Register</p>
-                <button type="submit" class="button">
+                <div id="register-button" class="button">
                     <svg id="user-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.54,11.29,9.88,5.64a1,1,0,0,0-1.42,0,1,1,0,0,0,0,1.41l4.95,5L8.46,17a1,1,0,0,0,0,1.41,1,1,0,0,0,.71.3,1,1,0,0,0,.71-.3l5.66-5.65A1,1,0,0,0,15.54,11.29Z" /></svg>
-                </button>
+                </div>
             </div>
         </form>
 
