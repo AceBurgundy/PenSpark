@@ -62,29 +62,26 @@ def create_blog():
     image = request.files.get("image")
     time = request.form.get("time")
 
-    blog = Blog(
-        title = title,
-        content = body,
-        author_id = current_user.id,
-        date_posted = datetime.strptime(f"{date.today()} {time}", '%Y-%m-%d %H:%M:%S.%f')
-    )
-
-    db.session.add(blog)
-    db.session.commit()
-
     if image:
 
         if image.filename.lower().split('.')[-1] not in ALLOWED_IMAGE_FORMATS:
             return jsonify({'message': 'Only image files are allowed for the image.', 'status': 'error'})
 
-        db.session.refresh(blog)
-        blog.image = save_picture(
+    blog = Blog(
+        title = title,
+        content = body,
+        author_id = current_user.id,
+        date_posted = datetime.strptime(f"{date.today()} {time}", '%Y-%m-%d %H:%M:%S.%f'),
+        image = save_picture(
             location="static/blog_pictures",
             image=image,
-            image_quality=10,
+            image_quality=1,
             as_thumbnail=False
-        )
-        db.session.commit()
+        ) if image else None
+    )
+
+    db.session.add(blog)
+    db.session.commit()
 
     return jsonify({'message': 'Blog created successfully', 'status': 'success'})
     

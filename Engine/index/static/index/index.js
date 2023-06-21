@@ -59,6 +59,11 @@ form.addEventListener("submit", (event) => {
         makeToastNotification("Not an image");
         return;
     }
+ 
+    if (imageInput.files[0].size/1024 > 15000.0000) {
+        makeToastNotification("Image must be less than 15mb");
+        return;
+    }
 
     const formData = new FormData();
     formData.append("csrf_token", csrfInput.value);
