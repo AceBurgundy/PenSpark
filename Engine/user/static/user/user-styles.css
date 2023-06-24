@@ -11,7 +11,7 @@ svg {
 #authentication {
     width: 90%;
     max-width: 400px;
-    height: 100dvh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
