@@ -60,7 +60,7 @@ form.addEventListener("submit", (event) => {
         return;
     }
  
-    if (imageInput.files[0].size/1024 > 15000.0000) {
+    if (file && file.size/1024 > 15000.0000) {
         makeToastNotification("Image must be less than 15mb");
         return;
     }

@@ -7,8 +7,7 @@ from sqlalchemy import insert
 from Engine import db
 
 # Create a blueprint for user routes
-user = Blueprint('user', __name__,
-                 template_folder='templates/user', static_folder='static/user')
+user = Blueprint('user', __name__, template_folder='templates/user', static_folder='static/user')
 
 @user.get("/login")
 def login_form():
