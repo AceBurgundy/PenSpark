@@ -2,6 +2,10 @@
 
 **PenSpark** is a minimaly aesthetic yet fully functional blog application where users can register, write posts, upload images, like content, and engage in meaningful discussions through comments.
 
+## Screenshots
+
+![UI](PenSpark.webp)
+
 ## 🔧 Features
 
 * 📝 **User Authentication**
